@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listRecipes, setFavorite } from '@/api/recipes';
 import type { Recipe } from '@/types/recipe';
 import { MEAL_TAGS, capitalize } from '@/lib/mealTags';
-import logo from '@/assets/logo.png';
+import icon from '@/assets/icon.png';
 import {
   ink,
   ink40,
@@ -174,8 +174,7 @@ export default function RecipeLibraryPage() {
     <div style={{ minHeight: '100%', background: page, fontFamily, color: ink, padding: '0 0 80px' }}>
       <div
         style={{
-          background: 'rgba(255,255,255,0.94)',
-          backdropFilter: 'blur(8px)',
+          background: '#F7F7F8',
           borderBottom: `1px solid ${hairline}`,
           position: 'sticky',
           top: 0,
@@ -186,7 +185,7 @@ export default function RecipeLibraryPage() {
           style={{
             maxWidth: 1180,
             margin: '0 auto',
-            padding: '14px 40px',
+            padding: '10px 40px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -194,7 +193,8 @@ export default function RecipeLibraryPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src={logo} alt="Thaw and Order" style={{ height: 32, width: 'auto' }} />
+            <img src={icon} alt="" style={{ height: 48, width: 48 }} />
+            <span style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.01em' }}>Thaw and Order</span>
             <span style={{ color: 'rgba(20,22,26,0.25)' }}>/</span>
             <span style={{ fontSize: 14, color: ink45 }}>All recipes</span>
           </div>

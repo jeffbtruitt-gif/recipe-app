@@ -2,15 +2,16 @@ import { Routes, Route, Link, Outlet } from 'react-router-dom';
 import RecipeLibraryPage from '@/pages/RecipeLibraryPage';
 import RecipeDetailPage from '@/pages/RecipeDetailPage';
 import RecipeFormPage from '@/pages/RecipeFormPage';
-import logo from '@/assets/logo.png';
+import icon from '@/assets/icon.png';
 
 function AppLayout() {
   return (
     <div className="min-h-screen bg-cream">
-      <header className="border-b border-clay/20 bg-cream/90 backdrop-blur sticky top-0 z-10">
-        <div className="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
-          <Link to="/">
-            <img src={logo} alt="Thaw and Order" className="h-9 w-auto" />
+      <header className="border-b border-clay/20 bg-[#F7F7F8] sticky top-0 z-10">
+        <div className="mx-auto max-w-4xl px-4 py-3 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <img src={icon} alt="" className="h-12 w-12" />
+            <span className="font-serif text-2xl text-clayDark tracking-tight">Thaw and Order</span>
           </Link>
           <Link
             to="/recipes/new"
