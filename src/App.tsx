@@ -9,7 +9,7 @@ function AppLayout() {
       <header className="border-b border-clay/20 bg-cream/90 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="font-serif text-2xl text-clayDark tracking-tight">
-            Recipe Box
+            Thaw and Order
           </Link>
           <Link
             to="/recipes/new"

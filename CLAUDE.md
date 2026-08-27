@@ -1,7 +1,22 @@
-# Recipe Box
+# Thaw and Order
 
 A personal recipe tracker. React + Vite + TypeScript + Tailwind, data in
-Supabase (project `kdelwwnpuuvgnamumhec`, tables prefixed `recipe_`).
+Supabase (project `kdelwwnpuuvgnamumhec`, tables prefixed `recipe_`). Live at
+https://jeffbtruitt-gif.github.io/recipe-app/, deployed via GitHub Actions
+(`.github/workflows/deploy.yml`) on every push to `main` in
+https://github.com/jeffbtruitt-gif/recipe-app.
+
+The repo, package name, live URL path, and `recipe_`-prefixed Supabase
+tables are all still named "recipe-app"/"recipe" — only the in-app display
+name changed to "Thaw and Order" (title bar, header, top bar). Don't rename
+the technical identifiers to match unless asked; the live URL in particular
+would break any existing links/bookmarks if it moved.
+
+**Adding a recipe needs no git action.** Recipe content is data in Supabase,
+not code in the repo — inserting a recipe (via the Supabase MCP tools or the
+app's own form) makes it live on the deployed site immediately, the same way
+it's immediately visible locally. Only *app code* changes (editing files
+under `src/`, config, etc.) need a commit + push to reach the live site.
 
 The **home page** (`/`, `RecipeLibraryPage.tsx`) and the **recipe detail
 page** (`/recipes/:id`) are a custom design system — pixel-specced handoffs

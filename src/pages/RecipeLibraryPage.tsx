@@ -193,7 +193,7 @@ export default function RecipeLibraryPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em' }}>Recipe Box</span>
+            <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em' }}>Thaw and Order</span>
             <span style={{ color: 'rgba(20,22,26,0.25)' }}>/</span>
             <span style={{ fontSize: 14, color: ink45 }}>All recipes</span>
           </div>
