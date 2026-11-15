@@ -241,7 +241,7 @@ export default function RecipeLibraryPage() {
                 cursor: 'pointer',
               }}
             >
-              Paste a recipe
+              AI Recipe
             </button>
             <Link
               to="/recipes/new"

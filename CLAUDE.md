@@ -167,7 +167,7 @@ Tags) plus a search + sort results list, all client-side over
 - Tag AND-logic: selecting multiple tags in the rail narrows (a recipe must
   have *all* of them), unlike Meal, which is OR (union) across the selected
   options.
-- "Paste a recipe" in the top bar opens `PasteRecipeDialog` — see below.
+- "AI Recipe" in the top bar opens `PasteRecipeDialog` — see below.
 
 ## Tags and photos (on the recipe page)
 
