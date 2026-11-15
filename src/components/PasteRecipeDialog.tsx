@@ -97,7 +97,7 @@ export default function PasteRecipeDialog({
             id="paste-recipe-title"
             style={{ margin: 0, fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: ink55 }}
           >
-            Paste a recipe
+            AI Recipe
           </h2>
           <p style={{ margin: '10px 0 0', fontSize: 15, lineHeight: 1.5, color: ink55 }}>
             Drop in the recipe text or a link to a recipe page. It gets formatted and added as a new entry.
