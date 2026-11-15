@@ -102,7 +102,7 @@ Format rules:
 - timerLabel: only when a step has a clear duration (e.g. "Rest 15 min"); otherwise empty string.
 - Times/servings: only what the source states; leave empty strings otherwise. totalMinutes is an integer only if the source gives a total (or prep+cook); otherwise null. timeNote is a short qualifier like "plus marinating" or empty.
 - meal: pick exactly one of breakfast, lunch, dinner, snack, dessert (drinks and cocktails are usually dessert or snack).
-- tags: 2-4 lowercase descriptive tags (cuisine, main ingredient, diet, occasion). Do not repeat the meal.
+- tags: always return an empty array. The user adds their own tags later; the app records only the meal.
 - description: one sentence in your own words. Skip stories, ads, and marketing copy.
 - notes: genuinely useful tips only (substitutions, storage, make-ahead), one per line, in your own words; empty string if none.
 - title: the recipe's name, cleaned of site boilerplate.`;
