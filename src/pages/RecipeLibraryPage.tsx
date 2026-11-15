@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import PasteRecipeDialog from '@/components/PasteRecipeDialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listRecipes, setFavorite } from '@/api/recipes';
 import type { Recipe } from '@/types/recipe';
@@ -98,6 +99,8 @@ const capsHeading: React.CSSProperties = {
 
 export default function RecipeLibraryPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [pasteOpen, setPasteOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [meals, setMeals] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -172,6 +175,15 @@ export default function RecipeLibraryPage() {
 
   return (
     <div style={{ minHeight: '100%', background: page, fontFamily, color: ink, padding: '0 0 80px' }}>
+      {pasteOpen && (
+        <PasteRecipeDialog
+          onClose={() => setPasteOpen(false)}
+          onImported={async (id) => {
+            await queryClient.invalidateQueries({ queryKey: ['recipes'] });
+            navigate(`/recipes/${id}`);
+          }}
+        />
+      )}
       <div
         style={{
           background: '#F7F7F8',
@@ -200,7 +212,7 @@ export default function RecipeLibraryPage() {
           </div>
           <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
             <button
-              title="Not built yet"
+              onClick={() => setPasteOpen(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',

@@ -165,8 +165,29 @@ Tags) plus a search + sort results list, all client-side over
 - Tag AND-logic: selecting multiple tags in the rail narrows (a recipe must
   have *all* of them), unlike Meal, which is OR (union) across the selected
   options.
-- "Paste a recipe" in the top bar is intentionally inert (not designed yet)
-  — don't wire it up without a spec.
+- "Paste a recipe" in the top bar opens `PasteRecipeDialog` — see below.
+
+## Paste-a-recipe import
+
+The dialog sends pasted text or a recipe URL to the `parse-recipe` Supabase
+Edge Function (`supabase/functions/parse-recipe/index.ts`, deployed with
+`verify_jwt=false`). The function fetches the page if given a URL, asks
+Claude (forced `save_recipe` tool call) to produce our standard structure,
+and returns it; the client (`src/api/importRecipe.ts`) maps it to
+`RecipeInput`, saves it with `createRecipe`, and opens the new recipe. The
+format rules in the function's `SYSTEM_PROMPT` mirror the "Adding a recipe
+from a link" rules above — **if you change one, change the other** and
+redeploy the function.
+
+- Two Supabase secrets must be set (Dashboard → Edge Functions → Secrets):
+  `ANTHROPIC_API_KEY` and `PARSE_PASSCODE`. Without them the function
+  returns 503 "not set up yet".
+- The site is public, so the passcode is the only thing stopping strangers
+  from spending API credits. The dialog asks for it once and remembers it in
+  `localStorage`.
+- Imported recipes still need a human glance: the model infers phases,
+  sidecars, and tags, and leaves times blank when the source doesn't give
+  them. Edit via the recipe's Edit page.
 
 ## Schema
 
