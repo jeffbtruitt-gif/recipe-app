@@ -5,6 +5,8 @@ import { StepNumberBadge } from './StepNumberBadge';
 import { TimerChip } from './TimerChip';
 import { StepText, NoteText } from './StepText';
 import RecipeComments from '@/components/RecipeComments';
+import PhotoControls from './PhotoControls';
+import RecipeTags from './RecipeTags';
 import {
   ink,
   ink40,
@@ -146,36 +148,22 @@ export default function MobileRecipeView({
           {derived.provenance && (
             <div style={{ marginTop: 14, fontSize: 13, color: ink45 }}>{derived.provenance}</div>
           )}
+          <RecipeTags recipeId={recipe.id} tags={recipe.tags} size="mobile" />
         </div>
 
         <div
           style={{
-            height: 220,
+            position: 'relative',
+            height: 260,
             background: recipe.imageUrl ? undefined : heroPlaceholderBg,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             borderTop: `1px solid ${hairline}`,
             borderBottom: `1px solid ${hairline}`,
           }}
         >
-          {recipe.imageUrl ? (
-            <img src={recipe.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div
-              style={{
-                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                fontSize: 11,
-                letterSpacing: '0.06em',
-                color: ink42,
-                background: 'rgba(255,255,255,0.85)',
-                padding: '6px 10px',
-                borderRadius: 4,
-              }}
-            >
-              no photo yet
-            </div>
+          {recipe.imageUrl && (
+            <img src={recipe.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           )}
+          <PhotoControls recipeId={recipe.id} imageUrl={recipe.imageUrl} variant="mobile" />
         </div>
 
         {recipe.ingredients.length > 0 && (

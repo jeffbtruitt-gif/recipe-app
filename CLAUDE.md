@@ -27,8 +27,10 @@ using shared inline-style design tokens in
 `src/components/recipeView/tokens.ts` (ink/navy palette, Inter Tight). The
 detail page has desktop (≥900px) and mobile (<900px) variants
 (`DesktopRecipeView.tsx` / `MobileRecipeView.tsx`) sharing one data-fetch,
-switched by `useIsDesktop`; the library page is desktop-only so far (no
-mobile composition has been designed for it yet). The **add/edit form**
+switched by `useIsDesktop`. The library page also switches at 900px, but its
+phone layout is **not from a design handoff** — it's a pragmatic adaptation
+(single column, collapsible "Filters" bar, meal/time under the title) so the
+page is usable on a phone; replace it if a real mobile design arrives. The **add/edit form**
 (`/recipes/new`, `/recipes/:id/edit`) still uses the original clay-themed
 layout — it hasn't been redesigned, so don't restyle it to match unless
 asked.
@@ -166,6 +168,24 @@ Tags) plus a search + sort results list, all client-side over
   have *all* of them), unlike Meal, which is OR (union) across the selected
   options.
 - "Paste a recipe" in the top bar opens `PasteRecipeDialog` — see below.
+
+## Tags and photos (on the recipe page)
+
+- **Tags**: `RecipeTags` under the header lists a recipe's tags; each links to
+  `/?tag=<name>`, which opens the library with that tag pre-selected.
+  "Edit tags" switches to add/remove mode (saved straight to
+  `recipe_recipes.tags`; names are lowercased/trimmed via `normalizeTag`).
+  Tags created on any recipe automatically become filter pills in the
+  library rail. The meal tag (breakfast/lunch/dinner/snack/dessert) is just
+  a tag too — removing it makes the recipe's category fall back to "Recipe".
+- **Photos**: `PhotoControls` lives in the hero. On a phone it offers "Take
+  photo" (file input with `capture="environment"` → camera) and "Choose
+  photo"; on desktop, "Add/Change photo". The image is shrunk client-side to
+  1200px JPEG (`src/lib/resizeImage.ts`), uploaded to the public
+  `recipe-images` Storage bucket under a unique `<recipeId>-<timestamp>.jpg`
+  path, saved as `image_url`, and the previous upload is deleted. The same
+  `image_url` is the library thumbnail. The bucket allows anonymous
+  upload/delete (same open posture as the tables).
 
 ## Paste-a-recipe import
 

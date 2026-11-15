@@ -257,6 +257,16 @@ export async function deleteRecipe(id: string): Promise<void> {
   if (error) throw error;
 }
 
+export function normalizeTag(tag: string): string {
+  return tag.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+export async function setTags(id: string, tags: string[]): Promise<void> {
+  const clean = [...new Set(tags.map(normalizeTag).filter(Boolean))];
+  const { error } = await supabase.from('recipe_recipes').update({ tags: clean }).eq('id', id);
+  if (error) throw error;
+}
+
 export async function setFavorite(id: string, isFavorite: boolean): Promise<void> {
   const { error } = await supabase.from('recipe_recipes').update({ is_favorite: isFavorite }).eq('id', id);
   if (error) throw error;

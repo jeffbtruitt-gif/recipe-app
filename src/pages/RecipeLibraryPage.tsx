@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import PasteRecipeDialog from '@/components/PasteRecipeDialog';
+import { useIsDesktop } from '@/lib/useIsDesktop';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listRecipes, setFavorite } from '@/api/recipes';
 import type { Recipe } from '@/types/recipe';
@@ -100,10 +101,14 @@ const capsHeading: React.CSSProperties = {
 export default function RecipeLibraryPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isDesktop = useIsDesktop(900);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [meals, setMeals] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  // Tags on a recipe link here as /?tag=<name>, so start with those selected.
+  const [tags, setTags] = useState<string[]>(() => searchParams.getAll('tag'));
   const [time, setTime] = useState<TimeFilter>('any');
   const [sort, setSort] = useState<SortKey>('recent');
 
@@ -172,6 +177,8 @@ export default function RecipeLibraryPage() {
   }
 
   const total = recipes?.length ?? 0;
+  const activeFilterCount = meals.length + tags.length + (time !== 'any' ? 1 : 0);
+  const thumb = isDesktop ? 84 : 64;
 
   return (
     <div style={{ minHeight: '100%', background: page, fontFamily, color: ink, padding: '0 0 80px' }}>
@@ -197,25 +204,33 @@ export default function RecipeLibraryPage() {
           style={{
             maxWidth: 1180,
             margin: '0 auto',
-            padding: '10px 40px',
+            padding: isDesktop ? '10px 40px' : '8px 16px 10px',
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: 24,
+            gap: isDesktop ? 24 : 8,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src={icon} alt="" style={{ height: 48, width: 48 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: isDesktop ? 14 : 10 }}>
+            <img src={icon} alt="" style={{ height: isDesktop ? 48 : 40, width: isDesktop ? 48 : 40 }} />
             <span style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.01em' }}>Thaw and Order</span>
-            <span style={{ color: 'rgba(20,22,26,0.25)' }}>/</span>
-            <span style={{ fontSize: 14, color: ink45 }}>All recipes</span>
+            {isDesktop && (
+              <>
+                <span style={{ color: 'rgba(20,22,26,0.25)' }}>/</span>
+                <span style={{ fontSize: 14, color: ink45 }}>All recipes</span>
+              </>
+            )}
           </div>
-          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0, flex: isDesktop ? undefined : '1 1 100%' }}>
             <button
               onClick={() => setPasteOpen(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
+                flex: isDesktop ? undefined : 1,
+                minHeight: isDesktop ? undefined : 44,
                 padding: '9px 14px',
                 borderRadius: 8,
                 border: `1px solid ${border}`,
@@ -233,6 +248,9 @@ export default function RecipeLibraryPage() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
+                flex: isDesktop ? undefined : 1,
+                minHeight: isDesktop ? undefined : 44,
                 padding: '9px 16px',
                 borderRadius: 8,
                 background: accent,
@@ -247,25 +265,53 @@ export default function RecipeLibraryPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1180, margin: '0 auto', padding: '0 40px' }}>
+      <div style={{ maxWidth: 1180, margin: '0 auto', padding: isDesktop ? '0 40px' : '0 12px' }}>
         <div
           style={{
-            marginTop: 28,
+            marginTop: isDesktop ? 28 : 12,
             display: 'grid',
-            gridTemplateColumns: '272px minmax(0,1fr)',
-            gap: 24,
+            gridTemplateColumns: isDesktop ? '272px minmax(0,1fr)' : 'minmax(0,1fr)',
+            gap: isDesktop ? 24 : 12,
             alignItems: 'start',
           }}
         >
+          {!isDesktop && (
+            <button
+              type="button"
+              onClick={() => setFiltersOpen((v) => !v)}
+              aria-expanded={filtersOpen}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                minHeight: 48,
+                padding: '0 16px',
+                border: 'none',
+                background: surface,
+                boxShadow: cardShadow,
+                fontFamily: 'inherit',
+                fontSize: 15,
+                fontWeight: 600,
+                color: ink,
+                cursor: 'pointer',
+              }}
+            >
+              <span>
+                Filters{activeFilterCount > 0 ? ` · ${activeFilterCount} on` : ''}
+              </span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: accentDark }}>{filtersOpen ? 'Hide' : 'Show'}</span>
+            </button>
+          )}
           {/* Filter rail */}
+          {(isDesktop || filtersOpen) && (
           <div
             style={{
               background: surface,
               boxShadow: cardShadow,
-              position: 'sticky',
+              position: isDesktop ? 'sticky' : 'static',
               top: 94,
-              maxHeight: 'calc(100vh - 118px)',
-              overflowY: 'auto',
+              maxHeight: isDesktop ? 'calc(100vh - 118px)' : undefined,
+              overflowY: isDesktop ? 'auto' : undefined,
             }}
           >
             <div style={{ padding: '22px 24px 20px', borderBottom: `1px solid ${hairline}` }}>
@@ -395,10 +441,11 @@ export default function RecipeLibraryPage() {
               )}
             </div>
           </div>
+          )}
 
           {/* Results */}
           <div style={{ background: surface, boxShadow: cardShadow }}>
-            <div style={{ padding: '24px 32px 22px', borderBottom: `1px solid ${hairline}` }}>
+            <div style={{ padding: isDesktop ? '24px 32px 22px' : '16px 16px 14px', borderBottom: `1px solid ${hairline}` }}>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -424,8 +471,9 @@ export default function RecipeLibraryPage() {
                 display: 'flex',
                 alignItems: 'baseline',
                 justifyContent: 'space-between',
-                gap: 20,
-                padding: '20px 32px 12px',
+                flexWrap: 'wrap',
+                gap: isDesktop ? 20 : 8,
+                padding: isDesktop ? '20px 32px 12px' : '16px 16px 10px',
               }}
             >
               <h2 style={capsHeading}>
@@ -469,22 +517,22 @@ export default function RecipeLibraryPage() {
                     key={r.id}
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '84px minmax(0,1fr) 120px 36px',
-                      gap: 22,
+                      gridTemplateColumns: isDesktop ? '84px minmax(0,1fr) 120px 36px' : '64px minmax(0,1fr) 36px',
+                      gap: isDesktop ? 22 : 14,
                       alignItems: 'start',
-                      padding: '20px 32px 22px',
+                      padding: isDesktop ? '20px 32px 22px' : '16px 16px 18px',
                       borderTop: `1px solid ${hairline}`,
                     }}
                   >
                     <div
                       style={{
-                        width: 84,
-                        height: 84,
+                        width: thumb,
+                        height: thumb,
                         background: r.imageUrl ? undefined : heroPlaceholderBg,
                       }}
                     >
                       {r.imageUrl && (
-                        <img src={r.imageUrl} alt="" style={{ width: 84, height: 84, objectFit: 'cover' }} />
+                        <img src={r.imageUrl} alt="" style={{ width: thumb, height: thumb, objectFit: 'cover' }} />
                       )}
                     </div>
                     <div style={{ minWidth: 0 }}>
@@ -492,7 +540,7 @@ export default function RecipeLibraryPage() {
                         to={`/recipes/${r.id}`}
                         style={{
                           display: 'block',
-                          fontSize: 19,
+                          fontSize: isDesktop ? 19 : 17,
                           fontWeight: 600,
                           lineHeight: 1.28,
                           letterSpacing: '-0.015em',
@@ -501,11 +549,16 @@ export default function RecipeLibraryPage() {
                       >
                         {r.title}
                       </Link>
+                      {!isDesktop && (
+                        <div style={{ marginTop: 4, fontSize: 13, color: ink45, fontVariantNumeric: 'tabular-nums' }}>
+                          {[meal, formatMinutes(r.totalMinutes), r.timeNote].filter(Boolean).join(' · ')}
+                        </div>
+                      )}
                       {r.description && (
                         <p
                           style={{
                             margin: '7px 0 0',
-                            fontSize: 15,
+                            fontSize: isDesktop ? 15 : 14,
                             lineHeight: 1.5,
                             color: ink55,
                             maxWidth: '62ch',
@@ -524,6 +577,7 @@ export default function RecipeLibraryPage() {
                         </div>
                       )}
                     </div>
+                    {isDesktop && (
                     <div style={{ textAlign: 'right' }}>
                       {meal && (
                         <div
@@ -544,6 +598,7 @@ export default function RecipeLibraryPage() {
                       </div>
                       {r.timeNote && <div style={{ fontSize: 12.5, color: ink42, marginTop: 3 }}>{r.timeNote}</div>}
                     </div>
+                    )}
                     <button
                       onClick={() => favoriteMutation.mutate({ id: r.id, value: !r.isFavorite })}
                       aria-pressed={r.isFavorite}

@@ -7,6 +7,8 @@ import { StepNumberBadge } from './StepNumberBadge';
 import { TimerChip } from './TimerChip';
 import { StepText, NoteText } from './StepText';
 import RecipeComments from '@/components/RecipeComments';
+import PhotoControls from './PhotoControls';
+import RecipeTags from './RecipeTags';
 import {
   ink,
   ink40,
@@ -256,37 +258,24 @@ export default function DesktopRecipeView({
               {derived.provenance && (
                 <div style={{ marginTop: 22, fontSize: 13, color: ink45 }}>{derived.provenance}</div>
               )}
+              <RecipeTags recipeId={recipe.id} tags={recipe.tags} />
             </div>
             <div
               style={{
+                position: 'relative',
                 background: recipe.imageUrl ? undefined : heroPlaceholderBg,
                 borderLeft: `1px solid ${hairline}`,
                 minHeight: 300,
               }}
             >
-              {recipe.imageUrl ? (
+              {recipe.imageUrl && (
                 <img
                   src={recipe.imageUrl}
                   alt=""
                   style={{ width: '100%', height: '100%', minHeight: 300, objectFit: 'cover', display: 'block' }}
                 />
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
-                  <div
-                    style={{
-                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                      fontSize: 11,
-                      letterSpacing: '0.06em',
-                      color: ink42,
-                      background: 'rgba(255,255,255,0.85)',
-                      padding: '6px 10px',
-                      borderRadius: 4,
-                    }}
-                  >
-                    no photo yet
-                  </div>
-                </div>
               )}
+              <PhotoControls recipeId={recipe.id} imageUrl={recipe.imageUrl} variant="desktop" />
             </div>
           </div>
 
