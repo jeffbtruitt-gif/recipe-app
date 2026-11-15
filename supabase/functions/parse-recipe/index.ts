@@ -101,7 +101,7 @@ Format rules:
 - sidecar: for each step, list only the ingredients that step uses (first introduced there), as {amount, shortName} with a terse shortName (e.g. "chicken thighs"). If a step uses nothing new, use an empty sidecar and optionally a short emptyNote like "Nothing new — just heat and patience."
 - timerLabel: only when a step has a clear duration (e.g. "Rest 15 min"); otherwise empty string.
 - Times/servings: only what the source states; leave empty strings otherwise. totalMinutes is an integer only if the source gives a total (or prep+cook); otherwise null. timeNote is a short qualifier like "plus marinating" or empty.
-- meal: pick exactly one of breakfast, lunch, dinner, snack, dessert (drinks and cocktails are usually dessert or snack).
+- meal: pick exactly one of breakfast, lunch, dinner, snack, dessert, drink. Use drink for cocktails, smoothies, and other beverages.
 - tags: always return an empty array. The user adds their own tags later; the app records only the meal.
 - description: one sentence in your own words. Skip stories, ads, and marketing copy.
 - notes: genuinely useful tips only (substitutions, storage, make-ahead), one per line, in your own words; empty string if none.
@@ -125,7 +125,7 @@ const RECIPE_TOOL = {
       totalTime: { type: 'string' },
       totalMinutes: { type: ['integer', 'null'] },
       timeNote: { type: 'string' },
-      meal: { type: 'string', enum: ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'] },
+      meal: { type: 'string', enum: ['breakfast', 'lunch', 'dinner', 'snack', 'dessert', 'drink'] },
       tags: { type: 'array', items: { type: 'string' } },
       notes: { type: 'string' },
       ingredients: {

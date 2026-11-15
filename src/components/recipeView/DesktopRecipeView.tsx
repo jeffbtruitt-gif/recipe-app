@@ -7,6 +7,7 @@ import { StepNumberBadge } from './StepNumberBadge';
 import { TimerChip } from './TimerChip';
 import { StepText, NoteText } from './StepText';
 import RecipeComments from '@/components/RecipeComments';
+import EditRecipeDialog from '@/components/EditRecipeDialog';
 import PhotoControls from './PhotoControls';
 import RecipeTags from './RecipeTags';
 import {
@@ -52,6 +53,7 @@ export default function DesktopRecipeView({
   onToggleStep: (id: string) => void;
 }) {
   const [shareLabel, setShareLabel] = useState('Share');
+  const [editing, setEditing] = useState(false);
   const notes = splitNotes(recipe.notes);
   const stats = [
     recipe.prepTime && ['Prep', recipe.prepTime],
@@ -83,6 +85,7 @@ export default function DesktopRecipeView({
 
   return (
     <div style={{ minHeight: '100%', background: page, fontFamily, color: ink, padding: '0 0 80px' }}>
+      {editing && <EditRecipeDialog recipe={recipe} onClose={() => setEditing(false)} />}
       <div
         style={{
           background: 'rgba(255,255,255,0.94)',
@@ -124,6 +127,23 @@ export default function DesktopRecipeView({
             </span>
           </div>
           <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            <button
+              onClick={() => setEditing(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '9px 14px',
+                borderRadius: 8,
+                border: `1px solid ${border}`,
+                fontSize: 14,
+                fontWeight: 500,
+                color: ink70,
+                background: 'transparent',
+                cursor: 'pointer',
+              }}
+            >
+              Edit
+            </button>
             <button
               onClick={() => window.print()}
               style={{
@@ -258,7 +278,7 @@ export default function DesktopRecipeView({
               {derived.provenance && (
                 <div style={{ marginTop: 22, fontSize: 13, color: ink45 }}>{derived.provenance}</div>
               )}
-              <RecipeTags recipeId={recipe.id} tags={recipe.tags} />
+              <RecipeTags tags={recipe.tags} />
             </div>
             <div
               style={{

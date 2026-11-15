@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Recipe } from '@/types/recipe';
 import type { DerivedHeader } from './deriveHeader';
 import { splitNotes } from './deriveHeader';
@@ -5,6 +7,7 @@ import { StepNumberBadge } from './StepNumberBadge';
 import { TimerChip } from './TimerChip';
 import { StepText, NoteText } from './StepText';
 import RecipeComments from '@/components/RecipeComments';
+import EditRecipeDialog from '@/components/EditRecipeDialog';
 import PhotoControls from './PhotoControls';
 import RecipeTags from './RecipeTags';
 import {
@@ -15,6 +18,7 @@ import {
   ink55,
   ink72,
   ink12,
+  border,
   hairline,
   hairlineLight,
   rule,
@@ -49,6 +53,7 @@ export default function MobileRecipeView({
   done: Record<string, boolean>;
   onToggleStep: (id: string) => void;
 }) {
+  const [editing, setEditing] = useState(false);
   const notes = splitNotes(recipe.notes);
   const stats: [string, string][] = [
     recipe.totalTime && ['Total', recipe.totalTime],
@@ -70,6 +75,7 @@ export default function MobileRecipeView({
         padding: '0 0 64px',
       }}
     >
+      {editing && <EditRecipeDialog recipe={recipe} onClose={() => setEditing(false)} />}
       <div style={{ width: '100%', maxWidth: 560, background: surface, boxShadow: cardShadow }}>
         <div
           style={{
@@ -85,17 +91,37 @@ export default function MobileRecipeView({
             zIndex: 6,
           }}
         >
-          <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <Link to="/" style={{ fontSize: 14, fontWeight: 500, color: ink45, padding: '6px 0' }}>
+              ‹ Recipes
+            </Link>
+            <span
+              style={{
+                fontSize: 13,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: ink45,
+                fontWeight: 500,
+              }}
+            >
+              {derived.category}
+            </span>
+          </div>
+          <button
+            onClick={() => setEditing(true)}
             style={{
-              fontSize: 13,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: ink45,
+              padding: '6px 16px',
+              borderRadius: 8,
+              border: `1px solid ${border}`,
+              background: 'transparent',
+              fontSize: 14,
               fontWeight: 500,
+              color: 'rgba(20,22,26,0.7)',
+              cursor: 'pointer',
             }}
           >
-            {derived.category}
-          </div>
+            Edit
+          </button>
         </div>
 
         <div style={{ padding: '34px 24px 26px' }}>
@@ -148,7 +174,7 @@ export default function MobileRecipeView({
           {derived.provenance && (
             <div style={{ marginTop: 14, fontSize: 13, color: ink45 }}>{derived.provenance}</div>
           )}
-          <RecipeTags recipeId={recipe.id} tags={recipe.tags} size="mobile" />
+          <RecipeTags tags={recipe.tags} size="mobile" />
         </div>
 
         <div

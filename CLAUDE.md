@@ -89,14 +89,14 @@ page's phase/sidecar rendering.
    under "Under 30"/"Under 60". Put any qualifier that doesn't belong in a
    plain number (`"plus marinating"`, `"plus overnight"`) in `time_note`.
 
-5. Add 2-5 lowercase `tags`. Always include exactly one meal-type tag from
-   this fixed set — `breakfast` | `lunch` | `dinner` | `snack` | `dessert` —
-   since the list page filters by these, and the detail page's
-   breadcrumb/eyebrow category comes from whichever one is present (falls
-   back to "Recipe" if none is set, which looks like a mistake, not a
-   feature — always set one). A second tag becomes the eyebrow's descriptor
-   (e.g. "Dinner · One Pan"). Fill the rest with cuisine, main ingredient,
-   etc.
+5. Set exactly one **type** tag from this fixed set — `breakfast` | `lunch` |
+   `dinner` | `snack` | `dessert` | `drink` (the list lives in
+   `src/lib/mealTags.ts`; cocktails/smoothies are `drink`). The library's
+   Type filter uses it, and the detail page's breadcrumb/eyebrow category
+   comes from it (falls back to "Recipe" if none is set, which looks like a
+   mistake — always set one). Add **no other tags** by default — Jeff found
+   auto-added tags noisy and adds his own; the first non-type tag, if he has
+   one, becomes the eyebrow's descriptor (e.g. "Dinner · One Pan").
 
 6. Skip fluff from the source (life stories, ads, SEO padding). If the source
    has genuinely useful tips (substitutions, storage, make-ahead), put them
@@ -171,13 +171,18 @@ Tags) plus a search + sort results list, all client-side over
 
 ## Tags and photos (on the recipe page)
 
-- **Tags**: `RecipeTags` under the header lists a recipe's tags; each links to
-  `/?tag=<name>`, which opens the library with that tag pre-selected.
-  "Edit tags" switches to add/remove mode (saved straight to
-  `recipe_recipes.tags`; names are lowercased/trimmed via `normalizeTag`).
-  Tags created on any recipe automatically become filter pills in the
-  library rail. The meal tag (breakfast/lunch/dinner/snack/dessert) is just
-  a tag too — removing it makes the recipe's category fall back to "Recipe".
+- **One Edit panel**: the **Edit** button (recipe page top bar, desktop and
+  phone) opens `EditRecipeDialog`, the single place to change a recipe's
+  details. It edits a draft and saves everything in one go. Today it has a
+  **Type** section (single-select) and a **Tags** section, plus a link to the
+  full ingredients/steps form (`/recipes/:id/edit`). To add another editable
+  field, add a draft value, a `<Section>`, and include it in the save call.
+- **Type** is stored as a normal tag (at most one of `MEAL_TAGS`), so saving
+  replaces the old type. Typing a type name into the tag box sets the type.
+- **Tags**: `RecipeTags` under the header shows non-type tags as links to
+  `/?tag=<name>`, which opens the library with that tag pre-selected (names
+  are lowercased/trimmed via `normalizeTag`). Tags created on any recipe
+  automatically become filter pills in the library rail.
 - **Photos**: `PhotoControls` lives in the hero. On a phone it offers "Take
   photo" (file input with `capture="environment"` → camera) and "Choose
   photo"; on desktop, "Add/Change photo". The image is shrunk client-side to
