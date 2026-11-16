@@ -194,9 +194,15 @@ Tags) plus a search + sort results list, all client-side over
 
 ## Paste-a-recipe import
 
-The dialog sends pasted text or a recipe URL to the `parse-recipe` Supabase
-Edge Function (`supabase/functions/parse-recipe/index.ts`, deployed with
-`verify_jwt=false`). The function fetches the page if given a URL, asks
+The dialog ("AI Recipe") sends pasted text, a recipe URL, and/or up to 4
+photos ("Take photo" opens the phone camera; "Choose photo" picks from the
+library — for a cookbook page, recipe card, handwritten note, or screenshot)
+to the `parse-recipe` Supabase Edge Function. Photos are shrunk client-side to 1800px JPEG
+(`photoToImportImage`) and sent base64 as `images: [{data, mediaType}]`; any
+text sent alongside photos is treated as a note, not a URL to fetch. The
+photos are only read, not saved — they don't become the recipe's image. The function lives in
+`supabase/functions/parse-recipe/index.ts` (deployed with `verify_jwt=false`).
+It fetches the page if given a URL, asks
 Claude (forced `save_recipe` tool call) to produce our standard structure,
 and returns it; the client (`src/api/importRecipe.ts`) maps it to
 `RecipeInput`, saves it with `createRecipe`, and opens the new recipe. The

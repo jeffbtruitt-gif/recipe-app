@@ -88,12 +88,32 @@ function toInput(parsed: ParsedRecipe, sourceUrl: string): RecipeInput {
   };
 }
 
-/** Sends pasted text or a link to the parse-recipe Edge Function, saves the result, and returns the new recipe's id. */
-export async function importRecipe(text: string, passcode: string): Promise<string> {
+export interface ImportImage {
+  /** base64 without the data: prefix */
+  data: string;
+  mediaType: string;
+}
+
+/** Shrinks a photo for upload and returns it base64-encoded for the Edge Function. */
+export async function photoToImportImage(file: File): Promise<ImportImage> {
+  const { resizeImage } = await import('@/lib/resizeImage');
+  // Larger than the library thumbnail so small cookbook print stays legible.
+  const blob = await resizeImage(file, 1800, 0.85);
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Couldn't read that photo."));
+    reader.readAsDataURL(blob);
+  });
+  return { data: dataUrl.slice(dataUrl.indexOf(',') + 1), mediaType: 'image/jpeg' };
+}
+
+/** Sends pasted text, a link, and/or photos to the parse-recipe Edge Function, saves the result, and returns the new recipe's id. */
+export async function importRecipe(text: string, passcode: string, images: ImportImage[] = []): Promise<string> {
   const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parse-recipe`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, passcode }),
+    body: JSON.stringify({ text, passcode, images }),
   });
 
   const body = (await res.json().catch(() => ({}))) as {
