@@ -10,6 +10,7 @@ import RecipeComments from '@/components/RecipeComments';
 import EditRecipeDialog from '@/components/EditRecipeDialog';
 import PhotoControls from './PhotoControls';
 import RecipeTags from './RecipeTags';
+import ShareButton from './ShareButton';
 import {
   ink,
   ink40,
@@ -107,10 +108,10 @@ export default function MobileRecipeView({
               {derived.category}
             </span>
           </div>
-          <button
-            onClick={() => setEditing(true)}
-            style={{
-              padding: '6px 16px',
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            <ShareButton
+              style={{
+              padding: '6px 14px',
               borderRadius: 8,
               border: `1px solid ${border}`,
               background: 'transparent',
@@ -118,10 +119,25 @@ export default function MobileRecipeView({
               fontWeight: 500,
               color: 'rgba(20,22,26,0.7)',
               cursor: 'pointer',
+              whiteSpace: 'nowrap',
             }}
-          >
-            Edit
-          </button>
+            />
+            <button
+              onClick={() => setEditing(true)}
+              style={{
+                padding: '6px 16px',
+                borderRadius: 8,
+                border: `1px solid ${border}`,
+                background: 'transparent',
+                fontSize: 14,
+                fontWeight: 500,
+                color: 'rgba(20,22,26,0.7)',
+                cursor: 'pointer',
+              }}
+            >
+              Edit
+            </button>
+          </div>
         </div>
 
         <div style={{ padding: '34px 24px 26px' }}>

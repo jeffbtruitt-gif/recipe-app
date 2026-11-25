@@ -10,6 +10,7 @@ import RecipeComments from '@/components/RecipeComments';
 import EditRecipeDialog from '@/components/EditRecipeDialog';
 import PhotoControls from './PhotoControls';
 import RecipeTags from './RecipeTags';
+import ShareButton from './ShareButton';
 import {
   ink,
   ink40,
@@ -52,7 +53,6 @@ export default function DesktopRecipeView({
   done: Record<string, boolean>;
   onToggleStep: (id: string) => void;
 }) {
-  const [shareLabel, setShareLabel] = useState('Share');
   const [editing, setEditing] = useState(false);
   const notes = splitNotes(recipe.notes);
   const stats = [
@@ -61,25 +61,6 @@ export default function DesktopRecipeView({
     recipe.totalTime && ['Total', recipe.totalTime],
     recipe.servings && ['Serves', recipe.servings],
   ].filter(Boolean) as [string, string][];
-
-  async function handleShare() {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: recipe.title, url });
-        return;
-      } catch {
-        // user cancelled or share failed — fall through to clipboard
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      setShareLabel('Copied!');
-      setTimeout(() => setShareLabel('Share'), 1500);
-    } catch {
-      /* clipboard unavailable — no-op */
-    }
-  }
 
   let stepCounter = 0;
 
@@ -161,8 +142,7 @@ export default function DesktopRecipeView({
             >
               Print
             </button>
-            <button
-              onClick={handleShare}
+            <ShareButton
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -175,9 +155,7 @@ export default function DesktopRecipeView({
                 background: 'transparent',
                 cursor: 'pointer',
               }}
-            >
-              {shareLabel}
-            </button>
+            />
             <button
               title="Cook mode is not built yet"
               style={{
